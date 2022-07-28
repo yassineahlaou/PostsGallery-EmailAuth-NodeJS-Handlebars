@@ -4,7 +4,7 @@ const router = express.Router()
 const bcrypt =  require('bcryptjs')
 
 const  jwt =  require('jsonwebtoken')
-const {auth} = require('./verifyToken')
+const {auth, ghest} = require('./verifyToken')
 
 const {registrationValidation , loginValidation} = require('../validation')
 const UserByEmail = require("../models/UserByEmail")
@@ -12,9 +12,13 @@ const Post = require ('../models/Post')
 
 
 
-let token = ''
+
 //login & landing page
-router.get('/',  ensureGuest, (req, res) => {
+/*router.get('/',  ensureGuest, (req, res) => {
+    res.render('login' , {layout:'login',}) //layout is an object
+})*/
+
+router.get('/',  ghest, (req, res) => {
     res.render('login' , {layout:'login',}) //layout is an object
 })
 //register
@@ -84,7 +88,7 @@ router.post('/', async (req, res) => {
 
     //create token jwt , as a security mesure that the user is logged in
 
-     token = jwt.sign({_id: userLog._id}, process.env.TOKEN_SECRET)
+    const token = jwt.sign({_id: userLog._id}, process.env.TOKEN_SECRET)
     res.cookie('authtoken', token).redirect('/dashboard')
     
 
